@@ -3,8 +3,8 @@
 pipeline {
     agent none
     parameters {
-    choice(name:"VERSION",choices:['1.1.0','1.1.1','1.1.2'],description:"")
-     booleanparam(name:"exicute",defaultvalue:true,description:"checking will it work or not")
+    choice(name: "VERSION", choices: ['1.1.0','1.1.1','1.1.2'], description: "")
+     booleanParam(name: "exicute", defaultvalue: true,description: "checking will it work or not")
     }
     stages {
         stage('build') {
