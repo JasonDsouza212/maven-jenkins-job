@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-
+def gv
 pipeline {
     agent any
     parameters {
@@ -7,22 +7,30 @@ pipeline {
         booleanParam(name: "exicute", defaultValue: true,description: "checking will it work or not")
     }
     stages {
+        stage('init') {
+         
+            steps {
+             script {
+                gv = load "script.groovy"
+             }
+            }
+        }
         stage('build') {
             when{
                 expression {
-                    params.exicute
+                    pa  rams.exicute
                 }
             }
             steps {
                 script {
-                    echo "Building the application..."
+                    gv.buildApp()
                 }
             }
         }
         stage('test') {
             steps {
                 script {
-                    echo "Testing the application..."
+                    gv.buildTest
                     echo "justcheching out ${params.VERSION}"
                 }
             }
@@ -30,7 +38,7 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
-                    echo "Deploying the application..."
+                    gv.buildDeploy
                 }
             }
         }
