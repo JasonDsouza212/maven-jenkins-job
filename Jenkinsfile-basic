@@ -3,14 +3,14 @@
 pipeline {
     agent any
     parameters {
-    choice(name: "VERSION", choices: ['1.1.0','1.1.1','1.1.2'], description: "")
-     booleanParam(name: "exicute", defaultValue: true,description: "checking will it work or not")
+        choice(name: "VERSION", choices: ['1.1.0','1.1.1','1.1.2'], description: "")
+        booleanParam(name: "exicute", defaultValue: true,description: "checking will it work or not")
     }
     stages {
         stage('build') {
             when{
-                expression{
-                    prams.exicute
+                expression {
+                    params.exicute
                 }
             }
             steps {
