@@ -2,8 +2,17 @@
 
 pipeline {
     agent none
+    parameters {
+    choice(name:"VERSION",choices:['1.1.0','1.1.1','1.1.2'],description:"")
+     booleanparam(name:"exicute",defaultvalue:true,description:"checking will it work or not")
+    }
     stages {
         stage('build') {
+            when{
+                expression{
+                    prams.exicute
+                }
+            }
             steps {
                 script {
                     echo "Building the application..."
@@ -14,6 +23,7 @@ pipeline {
             steps {
                 script {
                     echo "Testing the application..."
+                    echo "justcheching out ${params.VERSION}"
                 }
             }
         }
