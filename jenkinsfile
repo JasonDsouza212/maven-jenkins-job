@@ -5,10 +5,12 @@ pipeline{
         maven 'maven-3.8'
     }
     stages {
-        stage('init'){
-            script{
+        stage("init"){
+         steps{
+               script{
                 gv=load "script.groovy"
             }
+         }
         }
     
         stage("build jar") {
