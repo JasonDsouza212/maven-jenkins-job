@@ -13,7 +13,7 @@ pipeline{
             }
          }
         }
-        stage('increment-version'){
+        stage("increment-version"){
             steps{
                 script{
                     echo "Incrementing Version to next version"
