@@ -60,7 +60,7 @@ pipeline{
                         sh 'git branch'
                         sh 'git config --list'
                         
-                        sh "git remote set-url origin https://${USER}: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@github.com/JasonDsouza212/maven-jenkins-job-dockerfil.git"
+                        sh "git remote set-url origin https://${PASS}@github.com/JasonDsouza212/maven-jenkins-job-dockerfil.git"
                         sh "git add ."
                         sh 'git commit -m "the new version is added"'
                         sh 'git push origin HEAD:main'
