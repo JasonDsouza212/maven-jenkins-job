@@ -64,7 +64,7 @@ pipeline{
                         sh "git add ."
                         sh 'git commit -m "the new version is added"'
                         sh "git remote -v"
-                        sh "git push https://$PASS@github.com/JasonDsouza212/maven-jenkins-job-dockerfil.git HEAD:main"
+                        sh "git push https://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@github.com/JasonDsouza212/maven-jenkins-job-dockerfil.git HEAD:main"
                         // sh 'git push origin HEAD:main'
                    }
                 }
