@@ -1,11 +1,11 @@
-version:'3.8'
+version: '3.8'
 services:
     java-maven-app:
-      image: docker pull jasonkd006/my-repo:1.1.9-19
+      image: jasonkd006/my-repo:1.1.9-19
       ports:
         - 8080:8080
     postgres:
-      image: postgres:lts
+      image: postgres:13
       port:
         - 5432:5432
       environment:
