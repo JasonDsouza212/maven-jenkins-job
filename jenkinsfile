@@ -46,7 +46,7 @@ pipeline{
           steps{
                 script {
                     // def dockerCmd= "docker run -p 3080:3080 -d jasonkd006/my-repo:${IMAGE_NAME}"
-                    def dockerComposeCmd ="bash ./servercmds.sh"
+                    def dockerComposeCmd ="bash ./servercmds.sh jasonkd006/my-repo:${IMAGE_NAME}"
                     // def dockerComposeCmd ="docker-compose -f docker-compose.yaml up --detach"
                    sshagent(['my-key']) {
                           sh "scp servercmds.sh ec2-user@35.154.71.70:/home/ec2-user"

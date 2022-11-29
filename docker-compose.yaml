@@ -1,7 +1,7 @@
 version: '3'
 services:
     java-maven-app:
-      image: jasonkd006/my-repo:1.1.9-19
+      image: ${IMAGE}
       ports:
         - 8080:8080
     postgres:
