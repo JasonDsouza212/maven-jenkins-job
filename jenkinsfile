@@ -1,6 +1,9 @@
 def gv
 pipeline{
     agent any 
+    enivorenment{
+
+    }
     tools{
         maven 'maven-3.8'
     }
@@ -21,8 +24,8 @@ pipeline{
                     -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
                     versions:commit"
                    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
-                    def version = matcher[0][1]
-                    env.IMAGE_NAME ="$version-$BUILD_NUMBER"
+                   def version = matcher[0][1]
+                   env.IMAGE_NAME ="$version-$BUILD_NUMBER"
                 }
             }
         }
@@ -42,32 +45,33 @@ pipeline{
             }
         
         stage("deploy") {
-            steps {
-                script {
-                    gv.buildDeploy()
+           script {
+                    def dockerCmd= "docker run -p 3080:3080 -d jasonkd006/my-repo:${IMAGE_NAME}"
+                   sshagent(['ec2-server-k']) {
+                         sh "ssh -o StrictHostKeyChecking=no ec2-user@35.154.71.70 ${dockerCmd}"
+                        }
                    
                 }
-            }
         }
-        stage('commit version update'){
-            steps{
-                script{
-                      withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable:'PASS', usernameVariable: 'USER' )]){
-                        sh 'git config --global user.email "jasondsouza212@gmail.com"'
-                        sh 'git config --global user.name "jenkins"'
+        // stage('commit version update'){
+        //     steps{
+        //         script{
+        //               withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable:'PASS', usernameVariable: 'USER' )]){
+        //                 sh 'git config --global user.email "jasondsouza212@gmail.com"'
+        //                 sh 'git config --global user.name "jenkins"'
                         
-                        sh 'git status'
-                        sh 'git branch'
-                        sh 'git config --list'
+        //                 sh 'git status'
+        //                 sh 'git branch'
+        //                 sh 'git config --list'
                         
-                        // sh "git remote set-url origin https://${USER}:${PASS}@github.com/JasonDsouza212/maven-jenkins-job-dockerfil.git"
-                        sh 'git remote add origin "https://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@github.com/JasonDsouza212/maven-jenkins-job-dockerfil.git"'
-                        sh "git add ."
-                        sh 'git commit -m "the new version is added"'
-                        sh 'git push origin HEAD:main'
-                   }
-                }
-            }
-        }
+        //                 // sh "git remote set-url origin https://${USER}:${PASS}@github.com/JasonDsouza212/maven-jenkins-job-dockerfil.git"
+        //                 sh 'git remote add origin "https://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@github.com/JasonDsouza212/maven-jenkins-job-dockerfil.git"'
+        //                 sh "git add ."
+        //                 sh 'git commit -m "the new version is added"'
+        //                 sh 'git push origin HEAD:main'
+        //            }
+        //         }
+        //     }
+        // }
     }
     }
