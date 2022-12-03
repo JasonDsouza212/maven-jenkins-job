@@ -1,4 +1,4 @@
-def gv
+// def gv
 pipeline{
     agent any 
  
@@ -12,13 +12,13 @@ pipeline{
             }
         }
     
-        stage("init"){
-         steps{
-               script{
-                gv=load "script.groovy"
-            }
-         }
-        }
+//         stage("init"){
+//          steps{
+//                script{
+//                 gv=load "script.groovy"
+//             }
+//          }
+//         }
         stage("increment-version"){
             steps{
                 script{
@@ -35,14 +35,21 @@ pipeline{
         stage("build jar") {
             steps {
                 script {
-                    gv.buildJar()
+//                     gv.buildJar()
+                      echo "building the app"
+    sh "mvn clean package"
                 }
             }
         }
         stage("build image") {
             steps {
                 script {
-                    gv.buildImage()
+//                     gv.buildImage()
+                         echo "building the docker image"
+     withCredentials([usernamePassword(credentialsId: 'dockerhubcredential, passwordVariable:'PASS', usernameVariable: 'USER' )]){
+     sh "docker build -t jasonkd006/my-repo:${IMAGE_NAME} ."
+     sh "echo $PASS | docker login -u $USER --password-stdin"
+     sh "docker push jasonkd006/my-repo:${IMAGE_NAME}"
                     }
                 }
             }
