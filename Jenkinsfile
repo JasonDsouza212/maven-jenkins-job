@@ -6,6 +6,11 @@ pipeline{
         maven 'maven3'
     }
     stages {
+        stage("check"){
+            steps{
+                echo "just checking"
+            }
+        }
     
         stage("init"){
          steps{
