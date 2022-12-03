@@ -45,15 +45,16 @@ pipeline{
             steps {
                 script {
 //                     gv.buildImage()
-                         echo "building the docker image"
+
+     echo "building the docker image"
      withCredentials([usernamePassword(credentialsId: 'dockerhubcredential, passwordVariable:'PASS', usernameVariable: 'USER' )]){
      sh "docker build -t jasonkd006/my-repo:${IMAGE_NAME} ."
      sh "echo $PASS | docker login -u $USER --password-stdin"
      sh "docker push jasonkd006/my-repo:${IMAGE_NAME}"
-                    }
+     }
                 }
             }
-                                       }
+      }
         stage("deploy") {
           steps{
                 script {
