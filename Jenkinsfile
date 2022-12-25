@@ -47,22 +47,47 @@ pipeline{
                 }
             }
       }
+      stage('provision server'){
+            environment {
+                AWS_ACCESS_KEY_ID= credentials("jenkins_aws_access_key_id")
+                AWS_SECRET_ACCESS_KEY=credentials("jenkins_aws_access_key")
+                TF_VAR_env_prefix="test"
+            }
+            steps {
+                script {
+                    dir('terraform'){
+                        sh "terraform init"
+                        sh "terraform apply --auto-approve"
+                       EC2_PUBLIC_IP =sh(
+                        script: "terraform output ec2_public_ip"
+                        returnStdout: true
+                       ).trim()
+                    }
+                }  
+            }
+        }
+
         stage("deploy") {
           steps{
                 script {
+                    echo "waiting for EC@ server to initialize"
+                    sleep(time:90,unit:"SECONDS") //can optimise this
+
+                    echo "deploying docker image to EC2..."
+                    echo "${EC2_PUBLIC_IP}"
                     // def dockerCmd= "docker run -p 3080:3080 -d jasonkd006/my-repo:${IMAGE_NAME}"
                     def dockerComposeCmd ="bash ./servercmds.sh jasonkd006/my-repo:${IMAGE_NAME}"
                     // def dockerComposeCmd ="docker-compose -f docker-compose.yaml up --detach"
-                   sshagent(['awscredential']) {
-                          sh "scp servercmds.sh ec2-user@35.154.71.70:/home/ec2-user"
-                         sh "scp docker-compose.yaml ec2-user@35.154.71.70:/home/ec2-user"
+                   sshagent(['server-ssh-key']) {
+                          sh "scp servercmds.sh ec2-user@${EC2_PUBLIC_IP}:/home/ec2-user"
+                         sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ec2-user@35.154.71.70:/home/ec2-user"
                          sh "ssh -o StrictHostKeyChecking=no ec2-user@35.154.71.70 ${dockerComposeCmd}"
                         }
                    
                 }
           }
         }
-
+  
         stage('deploy-2') {
             environment {
                 AWS_ACCESS_KEY_ID =credentials('jenkins_aws_accesskey_id')
