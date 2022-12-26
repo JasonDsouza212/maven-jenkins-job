@@ -59,15 +59,18 @@ pipeline{
                         sh "terraform init"
                         sh "terraform apply --auto-approve"
                        EC2_PUBLIC_IP =sh(
-                        script: "terraform output ec2_public_ip"
+                        script: "terraform output ec2_public_ip",
                         returnStdout: true
                        ).trim()
                     }
-                }  
+                }    
             }
         }
 
         stage("deploy") {
+            environment{
+                DOCKER_CREDS=credentials('docker-hub-repo')
+            }
           steps{
                 script {
                     echo "waiting for EC@ server to initialize"
@@ -76,7 +79,7 @@ pipeline{
                     echo "deploying docker image to EC2..."
                     echo "${EC2_PUBLIC_IP}"
                     // def dockerCmd= "docker run -p 3080:3080 -d jasonkd006/my-repo:${IMAGE_NAME}"
-                    def dockerComposeCmd ="bash ./servercmds.sh jasonkd006/my-repo:${IMAGE_NAME}"
+                    def dockerComposeCmd ="bash ./servercmds.sh jasonkd006/my-repo:${IMAGE_NAME} ${DOCKER_CREDS_USR}  ${DOCKER_CREDS_PSW}"
                     // def dockerComposeCmd ="docker-compose -f docker-compose.yaml up --detach"
                    sshagent(['server-ssh-key']) {
                           sh "scp servercmds.sh ec2-user@${EC2_PUBLIC_IP}:/home/ec2-user"
