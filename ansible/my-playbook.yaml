@@ -1,0 +1,16 @@
+---
+- name: Install python3 and docker  
+  hosts: docker_server
+  become: true
+  gather_facts: False
+  tasks:
+    - name: Install python
+      vars:
+        ansible_python_interpreter: /usr/bin/python
+      yum:
+        name: 
+          - python3
+          - docker
+          - pip
+        update_cache: yes
+        state: present
