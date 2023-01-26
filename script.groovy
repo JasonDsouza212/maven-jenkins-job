@@ -15,7 +15,6 @@ def buildJar() {
 def buildImage() {
      echo "building the docker image"
      withCredentials([usernamePassword(credentialsId: 'Dockerhub', passwordVariable:'PASS', usernameVariable: 'USER')]){
-     sh "sudo usermod -aG docker $USER"
      sh "docker build -t jasonkd006/my-repo:${IMAGE_NAME} ."
      sh "echo $PASS | docker login -u $USER --password-stdin"
      sh "docker push jasonkd006/my-repo:${IMAGE_NAME}"
