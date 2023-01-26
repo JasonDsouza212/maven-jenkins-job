@@ -1,7 +1,6 @@
 def gv
 pipeline{
     agent any 
- 
     tools{
         maven 'maven3'
     }
@@ -11,7 +10,6 @@ pipeline{
                 echo "just checking"
             }
         }
-    
         stage("init"){
          steps{
                script{
@@ -36,7 +34,6 @@ pipeline{
             steps {
                 script {
                     gv.buildJar()
-
                 }
             }
         }
