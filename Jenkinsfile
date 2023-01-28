@@ -67,8 +67,8 @@ pipeline{
 
       stage('provision server'){
             environment {
-                AWS_ACCESS_KEY_ID= "AKIATZ7HYHWXY6MDBIEM"
-                AWS_SECRET_ACCESS_KEY= "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"
+                AWS_ACCESS_KEY_ID= credentials('aws_secret_id')
+                AWS_SECRET_ACCESS_KEY= credentials('aws_secret_acess_key')
                 TF_VAR_env_prefix= "test"
             }
             steps {
