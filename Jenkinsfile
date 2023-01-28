@@ -5,11 +5,14 @@ pipeline{
         maven 'maven3'
     }
     stages {
+
         stage("check"){
             steps{
                 echo "just checking"
             }
         }
+
+
         stage("init"){
          steps{
                script{
@@ -17,6 +20,8 @@ pipeline{
             }
          }
         }
+
+
         stage("increment-version"){
             steps{
                 script{
@@ -30,6 +35,8 @@ pipeline{
                 }
             }
         }
+
+
         stage("build jar") {
             steps {
                 script {
@@ -37,6 +44,8 @@ pipeline{
                 }
             }
         }
+
+
         stage('build app') {
             steps {
                script {
@@ -46,6 +55,7 @@ pipeline{
             }
         }
 
+
         stage("build image") {
             steps {
                 script {
@@ -53,6 +63,8 @@ pipeline{
                 }
             }
       }
+
+
       stage('provision server'){
             environment {
                 AWS_ACCESS_KEY_ID= "AKIATZ7HYHWXY6MDBIEM"
@@ -64,7 +76,7 @@ pipeline{
                     dir('terraform'){
                         sh "terraform init"
                         sh "terraform apply --auto-approve"
-                       EC2_PUBLIC_IP =sh(
+                       env.EC2_PUBLIC_IP =sh(
                         script: "terraform output ec2_public_ip",
                         returnStdout: true
                        ).trim()
@@ -73,6 +85,7 @@ pipeline{
             }
         }
 
+
         stage("deploy") {
             environment{
                 DOCKER_CREDS=credentials('Dockerhub')
@@ -80,7 +93,7 @@ pipeline{
           steps{
                 script {
                     echo "waiting for EC2@ server to initialize"
-                    sleep(time:90,unit:"SECONDS") //can optimise this
+                    sleep(time:90,unit:"SECONDS") 
 
                     echo "deploying docker image to EC2..."
                     echo "${EC2_PUBLIC_IP}"
@@ -89,11 +102,13 @@ pipeline{
                     def ec2Instance = "ec2-user@${EC2_PUBLIC_IP}"
                     sshagent(['my-app-key-pair']) {
                             sh "scp -o StrictHostKeyChecking=no servercmds.sh ${ec2Instance}:/home/ec2-user"
-                            sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ec2-user@35.154.71.70:/home/ec2-user"
+                            sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ${ec2Instance}:/home/ec2-user"
                             sh "ssh -o StrictHostKeyChecking=no ${ec2Instance} ${dockerComposeCmd}"
                             }
                 }
           }
         }
+
+
     }
-    }
+}
