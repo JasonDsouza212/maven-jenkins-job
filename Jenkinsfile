@@ -46,13 +46,13 @@ pipeline{
         }
 
 
-    //     stage("build image") {
-    //         steps {
-    //             script {
-    //                 gv.buildImage()
-    //             }
-    //         }
-    //   }
+        stage("build image") {
+            steps {
+                script {
+                    gv.buildImage()
+                }
+            }
+      }
 
 
       stage('provision server'){
