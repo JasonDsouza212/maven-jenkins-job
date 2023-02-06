@@ -15,9 +15,9 @@ def buildJar() {
 def buildImage() {
      echo "building the docker image"
      withCredentials([usernamePassword(credentialsId: 'Dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]){
-     sh "sudo docker build -t jasonkd006/my-repo:${IMAGE_NAME} ."
+     sh "docker build -t jasonkd006/my-repo:${IMAGE_NAME} ."
      sh "echo $PASS | docker login -u $USER --password-stdin"
-     sh "sudo docker push jasonkd006/my-repo:${IMAGE_NAME}"
+     sh "docker push jasonkd006/my-repo:${IMAGE_NAME}"
      }
 }
 return this
