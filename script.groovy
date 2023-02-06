@@ -14,7 +14,7 @@ def buildJar() {
 }
 def buildImage() {
      echo "building the docker image"
-     withCredentials([usernamePassword(credentialsId: 'Dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+     withCredentials([usernamePassword(credentialsId: 'Dockerhub',usernameVariable: 'USER', passwordVariable: 'PASS')]){
      sh "docker build -t jasonkd006/my-repo:${IMAGE_NAME} ." || echo
      sh "echo $PASS | docker login -u $USER --password-stdin" || echo
      sh "docker push jasonkd006/my-repo:${IMAGE_NAME}" || echo
